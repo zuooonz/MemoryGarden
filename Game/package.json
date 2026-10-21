@@ -1,0 +1,25 @@
+{
+  "name": "memorygarden-game",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node build.mjs --serve",
+    "build": "node build.mjs",
+    "deploy": "bash tools/deploy.sh prod",
+    "release": "bash tools/deploy.sh release",
+    "rollback": "bash tools/deploy.sh rollback",
+    "stage": "bash tools/deploy.sh stage",
+    "check": "node tools/verify.mjs --quick",
+    "verify": "node tools/verify.mjs",
+    "stability": "node tools/stability/run.mjs"
+  },
+  "dependencies": {
+    "three": "0.186.0"
+  },
+  "devDependencies": {
+    "acorn": "^8.18.0",
+    "acorn-walk": "^8.3.5",
+    "esbuild": "0.28.2"
+  }
+}

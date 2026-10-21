@@ -1,0 +1,14 @@
+# 私有资料：只读、不上传、不进版本库
+Local/
+Archive/
+# 依赖与生成物
+Game/node_modules/
+Game/dev/
+Game/dist/
+Game/snapshots/
+# 视频与发布包（tools/video 生成，不进仓库）
+Game/release/
+*.log
+# 本机设置
+.claude/settings.local.json
+.claude/scheduled_tasks.lock

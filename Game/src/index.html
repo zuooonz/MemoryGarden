@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>爷爷的一周</title>
+<!-- 网页图标（10-14 用户选方案 A 老榕树）：标签页图标内嵌（构建时把 public/icons/icon.svg 填进 ICON 处），其余文件在 public/，部署时传到服务器根目录 -->
+<link rel="icon" type="image/svg+xml" href="<!--ICON-->">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#cfe3e8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="爷爷的一周">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>
+<!--STYLES-->
+</style>
+</head>
+<body>
+<canvas id="view"></canvas>
+<div id="bubbles"></div>
+
+<div id="leftCol" class="hud">
+<div id="gp" class="glass hidden">
+  <button id="gpHead" title="点一下收起／展开">
+    <span id="gpFace"></span>
+    <span class="gpt"><b id="gpTitle"></b><small id="gpSub"></small></span>
+    <span id="gpStats"></span>
+  </button>
+  <div id="gpBody"><div id="gpLine"></div><div id="gpFoot"><span id="gpNow"></span><button id="gpMore" data-i="history" title="最近发生的事"><span>记录</span></button></div><div id="gpLog"></div></div>
+</div>
+<div id="hint" class="hidden"></div>
+<div id="feed"></div>
+</div>
+<div id="hudR" class="hud glass hidden">
+  <div id="hudRow"><span id="clock">08:00</span><span id="dayLabel"></span>
+  <button id="pauseBtn" title="暂停／继续"></button>
+  <button id="speedBtn" title="换速度">1×</button>
+  <span id="spdSeg"><button data-s="1" title="正常速度">1×</button><button data-s="2" title="两倍速">2×</button><button data-s="4" title="四倍速">4×</button></span>
+  <button id="menuBtn" title="展开／收起"></button></div>
+  <div id="menu">
+    <button id="followBtn" data-i="eye"><span>视角<small>镜头跟在他身后走；拖动画面退出</small></span></button>
+    <button id="watchBtn" data-i="zen"><span>静观<small>收起界面，只看小镇；点画面回来</small></span></button>
+    <button id="bookBtn" data-i="book"><span>手册</span></button>
+    <button id="gearBtn" data-i="gear"><span>设置</span></button>
+  </div>
+</div>
+<div id="muse"></div>
+
+<div id="dock" class="hud glass hidden">
+  <button id="bagBtn" class="tile act" title="道具箱：点开放道具"><span class="ic" data-i="bag"></span><span class="nm">道具</span></button>
+  <div id="energy" class="tile" title="今天的精力"><span class="ic"><span class="num"></span></span><span class="nm">精力</span></div>
+  <div id="cards"></div>
+  <div id="actions" class="hidden">
+  <button id="actCall" class="tile act help" title="打电话问问他：在哪、看到了什么。他着急时，听到你的声音会安心"><span class="ic" data-i="callAsk"></span><span class="nm">电话</span></button>
+  <button id="actWalk" class="tile act help" title="陪他一起走：一定能到，算你帮的忙。他慌了时陪上去最好；他走得好好的，陪着走反倒让他失落"><span class="ic" data-i="together"></span><span class="nm">陪同</span></button>
+</div>
+  <button id="startBtn" class="tile act go" title="出发" aria-label="出发"><span class="ic" data-i="go"></span><span class="nm">出发</span></button>
+</div>
+
+
+<div id="moment" class="hidden"></div>
+<div id="game" class="hidden"></div>
+<div id="maplayer"></div>
+<div id="mappanel" class="hidden"></div>
+<div id="modal" class="modal hidden"><div class="sheet" id="sheet"></div></div>
+<!--APP-->
+</body>
+</html>

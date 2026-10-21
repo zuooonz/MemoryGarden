@@ -1,0 +1,227 @@
+/* ===== 界面（第 10 轮）：只留三块浮层——左上爷爷、右上时间、底部道具箱；中间让给小镇 ===== */
+
+.hud{position:fixed;z-index:5;transition:opacity .9s}
+.glass{background:var(--glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--edge);box-shadow:var(--sh)}
+.icn{display:block;flex:0 0 auto}
+/* 行动按钮：主（橙底）和次（浅底）一样高、一样字号，主次只靠颜色和粗细区分；只有要抢时间点的按钮（诈骗电话“不对劲！”）用 .big */
+.primary{background:var(--accent);color:#fff;font-weight:800;font-size:17px;border-radius:var(--r3);padding:10px 20px;min-height:48px;box-shadow:var(--shadow)}
+.primary:disabled{opacity:.5}
+.ghost{background:var(--paper2);border-radius:var(--r2);padding:10px 20px;min-height:48px;font-size:17px;font-weight:700}
+@keyframes pulse{50%{box-shadow:0 0 0 6px rgba(228,119,79,.35)}}
+@keyframes tin{from{opacity:0;transform:translateY(6px)}}
+@keyframes ring2{0%,100%{box-shadow:0 0 0 0 rgba(228,119,79,.35)}50%{box-shadow:0 0 0 5px rgba(228,119,79,0)}}
+
+/* 爷爷 */
+#leftCol{left:14px;top:calc(12px + env(safe-area-inset-top));width:272px;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+#leftCol>*{pointer-events:auto}
+#gp{position:relative;border-radius:var(--r3);padding:10px 12px 10px}
+#gpHead{display:flex;align-items:center;gap:10px;width:100%;min-height:0;padding:0;text-align:left}
+#gpFace svg{width:44px;height:44px;display:block}
+.gpt{display:flex;flex-direction:column;line-height:1.25;flex:1;min-width:0}
+.gpt b{font-size:18px;letter-spacing:.02em}
+.gpt small{font-size:12px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#gpStats{display:flex;flex-direction:column;gap:3px;align-items:flex-end}
+#gpStats span{display:flex;align-items:center;justify-content:center;gap:3px;height:22px;min-width:48px;font-size:13px;font-weight:700;border-radius:var(--r2);padding:0 8px 0 6px;font-variant-numeric:tabular-nums}
+#gpStats .ok{color:var(--ink);background:rgba(91,88,102,.08)}#gpStats .self{color:var(--done);background:var(--keep-bg)}
+#gpStats em{font-style:normal;font-weight:500;font-size:11px;display:none}
+#gpStats span{width:60px;box-sizing:border-box}#gp.collapsed #gpStats span{width:52px}
+@media (max-width:760px){#gpStats em{display:none!important}}   /* 手机胶囊只放图标＋几/几，提示“较多”也不塞字 */   /* 两个胶囊同宽、同图标大小（都写成 几/几） */
+@media (min-width:761px){#gpStats span,#gp.collapsed #gpStats span{width:88px;white-space:nowrap}#gpStats em{display:inline}.tips-1 #gpStats span,.tips-1 #gp.collapsed #gpStats span{width:60px}.tips-1 #gpStats em{display:none}}   /* 桌面有空间：直接写“办成”“自己”，不只靠图标 */
+#gpBody{margin-top:10px}
+#gp.collapsed #gpBody{display:none}
+#gpLine{display:flex;align-items:flex-start}
+.tl{display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;position:relative}
+.tl:not(:last-child):after{content:'';position:absolute;top:15px;left:calc(50% + 18px);right:calc(-50% + 18px);height:2px;border-radius:var(--r1);background:rgba(91,88,102,.18)}
+.tl.done:not(:last-child):after,.tl.partial:not(:last-child):after{background:var(--done)}
+.tl .tic{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.75);color:var(--c);border:2px solid color-mix(in srgb,var(--c) 35%,transparent)}
+.tl.now .tic{background:#fff;border-color:var(--c);animation:ring2 1.8s infinite}
+.tl.done .tic{background:var(--done);color:#fff;border-color:var(--done)}
+.tl.done.helped .tic{background:var(--blue);border-color:var(--blue)}
+.tl.partial .tic{background:var(--gold);color:#fff;border-color:var(--gold)}
+.tl.fail .tic{background:#f1d9d6;color:var(--warn);border-color:#f1d9d6}
+.tl .tm{font-size:11px;color:var(--ink2);font-variant-numeric:tabular-nums;margin-top:3px}
+.tl.now .tm{color:var(--c);font-weight:800}
+.tl .tn{display:none;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+#gpFoot{display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:7px;border-top:1px solid rgba(91,88,102,.1)}
+#gpNow{flex:1;font-size:13px;line-height:1.4;color:var(--ink);min-width:0}
+#gpMore{min-height:0;height:22px;font-size:12px;font-weight:700;color:var(--ink2);padding:0 8px 0 6px;white-space:nowrap;display:flex;align-items:center;gap:4px;border-radius:var(--r2);background:rgba(91,88,102,.07)}
+#gp.log #gpMore,#topSheet.log #gpMore{background:var(--ink);color:#fff}
+.tips-1 #gpMore span{display:none}
+#gpLog{display:none;margin-top:6px;font-size:12px;color:var(--ink2);line-height:1.55;max-height:96px;overflow:auto}
+#gp.log #gpLog,#topSheet.log #gpLog{display:block}
+#gpLog b{font-weight:600;font-variant-numeric:tabular-nums;margin-right:5px}
+
+/* 时间 */
+#hudR{right:14px;top:calc(12px + env(safe-area-inset-top));display:flex;align-items:center;gap:4px;height:48px;padding:0 6px 0 16px;border-radius:var(--r3)}
+#clock{font-size:21px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.02em;position:relative;margin-right:8px;display:inline-block;width:3.1em;text-align:center;font-family:ui-monospace,'SF Mono',Menlo,Consolas,'Noto Sans Mono',monospace}
+#clock.ff:after{content:'»';position:absolute;right:-.7em;top:-.4em;font-size:13px;color:var(--accent)}
+#dayLabel{display:none}
+#hudR>button{width:36px;height:36px;min-height:0;border-radius:50%;display:grid;place-items:center;color:var(--ink2);font-weight:800;font-size:13px}
+@media (hover:hover){#hudR>button:hover{background:rgba(91,88,102,.08)}}
+#pauseBtn.on{background:var(--ink);color:#fff}
+#menu{position:absolute;right:0;top:56px;border-radius:var(--r3);padding:6px;display:flex;flex-direction:column;min-width:236px;background:rgba(255,252,246,.97)}
+#menu button{display:flex;align-items:center;gap:12px;text-align:left;padding:9px 12px;border-radius:var(--r2);font-size:15px;font-weight:700;min-height:0}
+#menu button .icn{color:var(--ink2)}
+#menu button small{display:block;font-weight:400;font-size:12px;color:var(--ink2)}
+@media (hover:hover){#menu button:hover{background:rgba(91,88,102,.07)}}
+/* 菜单里的开关（薄雾、跟随）开着时：浅蓝底＋蓝字；手册、设置是打开窗口的动作，静观开着时菜单本身收起，都不需要选中态 */
+#menu button.on,#hudR #menu button.on{background:#e8eef7;color:var(--blue)}#menu button.on .icn{color:var(--blue)}
+
+/* 字幕：事件与提示合成一行 */
+#hint,#feed{pointer-events:none!important;transition:opacity .3s}
+#feed{display:flex;flex-direction:column;gap:6px}
+#hint[style*="opacity: 0"]{display:none}
+/* 消息条：提示（给你）与通知（他那边的事）同一种样子，用颜色和图标分类别 */
+.msg{--m:#8d8898;display:flex;align-items:flex-start;gap:9px;background:rgba(255,252,246,.93);color:var(--ink);border-radius:var(--r3);
+  padding:6px 12px 6px 7px;font-size:14px;border:1px solid var(--edge);line-height:1.5;box-shadow:var(--sh);max-width:100%;animation:tin .3s;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.msg .mi{flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:var(--m);color:#fff;display:grid;place-items:center;margin-top:0}
+.msg .mt{padding-top:2px}
+.msg .mt b{font-variant-numeric:tabular-nums;color:var(--ink2);font-weight:600;margin-right:6px;font-size:12px}
+.msg.good{--m:var(--done)}.msg.bad{--m:var(--warn)}.msg.help{--m:var(--blue)}.msg.note{--m:var(--gold)}
+.msg.guide{--m:var(--accent);background:rgba(255,243,234,.95);border-color:rgba(228,119,79,.3)}
+body.hinting #feed{opacity:0}
+body.in-moment #feed{display:none}
+
+/* 底部：道具（圆角方块）与动作（圆形）同一套“图形＋两字标签”，上下两行对齐 */
+#dock{left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));display:flex;align-items:flex-start;gap:2px;padding:8px 10px 6px;border-radius:var(--r3);max-width:calc(100% - 28px)}
+#actions{right:14px;bottom:calc(14px + env(safe-area-inset-bottom));display:flex;gap:2px;padding:8px 10px 6px;border-radius:var(--r3)}
+.tile{--c:var(--ink);--cb:rgba(91,88,102,.08);flex:0 0 auto;width:60px;min-height:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:5px;position:relative;border-radius:var(--r3);transition:transform .15s}
+.tile .ic{width:44px;height:44px;border-radius:var(--r3);display:grid;place-items:center;background:var(--cb);color:var(--c);position:relative;transition:background .15s,color .15s,box-shadow .15s}
+.tile .nm{font-size:12px;font-weight:700;line-height:16px;white-space:nowrap;color:var(--ink)}
+.tile.act .ic{border-radius:50%}
+@media (hover:hover){button.tile:not(:disabled):hover .ic{filter:brightness(.97)}}
+.tile.go{--c:#fff;--cb:var(--accent)}.tile.go .ic{box-shadow:0 3px 10px rgba(228,119,79,.38)}.tile.go .nm{color:var(--accent)}
+.tile.help{--c:var(--blue);--cb:#e6eef8}.tile.help .nm{color:var(--blue)}
+.tile.help:disabled{--c:#a9a5b2;--cb:rgba(91,88,102,.07)}.tile.help:disabled .nm{color:#a9a5b2}
+#bagBtn{display:none}
+#dock.live #bagBtn{display:flex}
+#dock.live.open #bagBtn{--c:#fff;--cb:var(--ink)}
+#energy .ic{background:none}
+#energy .num{height:24px;padding:0 9px;border-radius:var(--r2);background:var(--en);color:var(--en-ink);font-weight:900;font-size:15px;display:flex;align-items:baseline;line-height:24px;white-space:nowrap;font-variant-numeric:tabular-nums}
+#energy .num small{font-size:11px;font-weight:700;opacity:.6;margin-left:1px}
+#energy .num.zero{background:#ebe5d8;color:#9a96a3}
+#dock.live{left:14px;transform:none}
+@media (min-width:761px){#dock.live:not(.open){width:var(--topW);box-sizing:border-box;justify-content:space-between}}   /* 桌面：收起的道具箱和左上角爷爷那块同宽、左右对齐 */
+#dock.live:not(.open) #cards{display:none}
+#cards{display:flex;gap:2px;overflow-x:auto;min-width:0;border-left:1px solid rgba(91,88,102,.12);border-right:1px solid rgba(91,88,102,.12);padding:8px 6px 0;margin:-8px 4px 0;scrollbar-width:none}
+#dock.live #cards{border-right:0;margin-right:0}
+#cards:empty{display:none}
+.card{--c:var(--keep);--cb:var(--keep-bg)}
+.card.today{--c:var(--today);--cb:var(--today-bg)}
+.card .cost{position:absolute;top:-6px;right:-7px;background:var(--en);color:var(--en-ink);font-size:11px;font-weight:900;border-radius:var(--r2);padding:0 5px;line-height:17px;box-shadow:0 0 0 2px #fffcf6}
+.card .cs{display:none;font-size:11px;line-height:14px;color:var(--c);white-space:nowrap;font-weight:700;margin-top:-3px}
+.card .new{display:none;position:absolute;top:-6px;left:-2px;font-size:10px;font-weight:800;color:#fff;background:var(--accent);border-radius:var(--r2);padding:0 4px;line-height:16px;box-shadow:0 0 0 2px #fffcf6}
+.card.sel .ic{background:var(--c);color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.18)}
+
+.card:disabled{opacity:.35}
+
+/* 静下来看：不操作时界面变淡，“只看小镇”时全部收起 */
+#muse{position:fixed;left:50%;bottom:calc(20% + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:4;font-family:"Songti SC","STSong","Noto Serif CJK SC","Source Han Serif SC",serif;
+  font-size:22px;color:var(--paper);text-shadow:0 1px 6px rgba(20,20,30,.5);background:rgba(43,42,51,.38);backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);padding:10px 26px;border-radius:var(--r3);opacity:0;transition:opacity 2.5s;pointer-events:none;
+  text-align:center;width:max-content;max-width:calc(100% - 40px);letter-spacing:.1em;line-height:1.6}
+#muse.on{opacity:1}
+body.idle .hud,body.idle #feed{opacity:.12}
+@media (hover:hover){body.idle .hud:hover{opacity:1;transition:opacity .2s}}
+body.watch .hud,body.watch #bubbles .tag,body.watch #bubbles .risk{opacity:0;pointer-events:none}
+
+
+
+/* 提示文字：少／适中（默认）／多 */
+.tips-1 .gpt small,.tips-1 #gpNow,.tips-1 .card .nm,.tips-1 #startBtn .nm,.tips-1 #energy .nm,.tips-1 #bagBtn .nm,.tips-1 #menu small{display:none}
+.tips-1 #gpFoot{justify-content:flex-end}
+.tips-1 .tl:not(.now) .tm{visibility:hidden}
+.tips-3 #gpStats em{display:inline}
+.tips-3 .tl .tn{display:block}
+.tips-3 .card .cs{display:block}
+
+/* 字号 */
+.fs-2 .hud,.fs-2 #moment,.fs-2 #game,.fs-2 .sheet,.fs-2 #mappanel{zoom:1.15}.fs-2 #bubbles .bubble{--bz:1.15}
+.fs-3 .hud,.fs-3 #moment,.fs-3 #game,.fs-3 .sheet,.fs-3 #mappanel{zoom:1.3}.fs-3 #bubbles .bubble{--bz:1.3}   /* 头顶气泡：不用 zoom（zoom 会连位置一起放大，气泡跑远），改为以底边中点为基准放大 */
+body.in-map #dock,body.in-map #actions,body.in-map #feed,body.in-map #gp,body.in-map #topSheet,body.watch #topSheet{display:none}
+body.in-moment #feed{display:none}
+
+/* 手机竖屏 */
+@media (max-width:760px){
+  .fs-2 .hud,.fs-3 .hud{zoom:1.05}.fs-2 #game,.fs-2 .sheet{zoom:1.07}.fs-3 #game,.fs-3 .sheet{zoom:1.15}   /* 手机上放不下 1.15／1.3：大 1.07、特大 1.15，两档要看得出差别（10-15 用户：原来大、特大都是 1.15） */
+  #leftCol{left:8px;top:calc(8px + env(safe-area-inset-top));width:calc(100% - 16px);gap:6px}
+  #gp{width:calc(100% - 188px);min-width:168px;padding:8px 10px;border-radius:var(--r3)}
+  #gpFace svg{width:38px;height:38px}
+  .gpt b{font-size:16px}
+  #gpStats span{font-size:12px}
+  #gpNow{font-size:12px}
+  #hudR{right:8px;top:calc(8px + env(safe-area-inset-top));height:44px;padding:0 4px 0 12px}
+  #clock{font-size:18px;margin-right:4px}
+  #hudR>button{width:34px;height:34px}
+  #dock{left:8px;right:8px;transform:none;max-width:none;border-radius:var(--r3);padding:6px}
+  #dock.live{left:8px;right:auto}
+  #dock.live.open{right:8px}
+  #cards{flex:1}
+  #actions{right:8px;bottom:calc(8px + env(safe-area-inset-bottom))}
+  body.dock-open #actions{bottom:calc(98px + env(safe-area-inset-bottom))}
+  .msg,.msg.guide{font-size:13px}
+  #moment{left:8px;right:8px;top:auto;width:auto;bottom:calc(8px + env(safe-area-inset-bottom))}
+  #muse{font-size:18px}
+}
+/* 手机横屏等矮屏 */
+@media (max-height:520px){
+  #leftCol{top:6px}#gp{padding:6px 10px}#gpFace svg{width:32px;height:32px}#gpBody{margin-top:6px}
+  .tl .tic{width:26px;height:26px}.tl:not(:last-child):after{top:12px}
+  #hudR{top:6px;height:40px}
+  #dock,#actions{bottom:6px}
+  #moment{top:48px;max-height:calc(100% - 60px);overflow:auto}
+}
+/* 长窗口：宽屏两列、可折叠 */
+.sheet{width:min(720px,100%)}
+.hb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin:10px 0}
+.hb-item{background:#fff;border-radius:var(--r2);padding:10px 12px;font-size:14px;line-height:1.6}
+.hb-item b{display:block;font-size:15px;margin-bottom:2px}
+.hb-item .sub{font-size:13px}
+/* 折叠：整行可点，右侧自绘箭头（收起朝右，展开朝下） */
+details.fold{border-radius:var(--r2);margin:10px 0;background:var(--paper2);overflow:hidden}
+details.fold>summary{list-style:none;display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;font-weight:700;font-size:15px;color:var(--ink);transition:background .15s}
+details.fold>summary::-webkit-details-marker{display:none}
+@media (hover:hover){details.fold>summary:hover{background:rgba(91,88,102,.07)}}
+details.fold>summary:after{content:'';margin-left:auto;width:8px;height:8px;border-right:2.2px solid var(--ink2);border-bottom:2.2px solid var(--ink2);transform:rotate(-45deg);transition:transform .2s}
+details.fold[open]>summary:after{transform:rotate(45deg) translate(-2px,-2px)}
+details.fold>:not(summary){padding:0 14px}
+details.fold>ul{padding-left:34px}
+details.fold[open]{padding-bottom:6px}
+@media (min-width:761px){ table.tasks{columns:1} .rm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px} }
+
+
+/* 包饺子：一张俯视的案桌小场景，和小镇同一种低多边形画法 */
+#game .kt-say{display:flex;gap:10px;align-items:center;margin:8px 0}
+#game .kt-face svg{width:46px;height:46px;display:block}
+#game .kt-say .say{flex:1;margin:0;min-height:50px;font-size:18px;text-align:left;place-items:center start;padding:10px 14px;border-radius:var(--r2);background:#fff;box-shadow:0 2px 0 rgba(58,44,30,.08)}
+#game .kt-scene{display:block;width:100%;height:auto;border-radius:var(--r2)}
+#game .kt-tgt{cursor:pointer}
+#game .kt-hl{fill:transparent;stroke:transparent;stroke-width:2;stroke-dasharray:6 5;transition:fill .15s}
+#game .kitchen.holding .kt-hl{stroke:rgba(255,255,255,.9);fill:rgba(255,255,255,.12)}
+@media (hover:hover){#game .kitchen.holding .kt-tgt:hover .kt-hl{fill:rgba(255,255,255,.3)}}
+#game .kt-tag rect{fill:rgba(255,252,246,.92)}#game .kt-tag text{font-size:12px;font-weight:700;fill:var(--ink2)}
+#game .kt-drop{animation:ktdrop .3s ease-out}
+@keyframes ktdrop{from{opacity:0}}
+#game .kt-items{display:flex;justify-content:center;gap:4px;flex-wrap:wrap;margin:10px 0 2px}
+#game .kt-item{--cb:#f5efe2;width:66px}
+#game .kt-item .ic{background:#f5efe2}
+#game .kt-item{touch-action:none}
+#game .kt-item.used{opacity:.25}
+#game .kitchen.listening .kt-items,#game .kitchen.listening .kt-scene{opacity:.55;pointer-events:none}
+#game .kt-prog{display:flex;justify-content:center;gap:8px;margin-top:6px}
+#game .kt-prog i{width:22px;height:20px;clip-path:var(--hex);background:rgba(91,88,102,.15)}
+#game .kt-prog i.on{background:var(--accent)}#game .kt-prog i.ok{background:var(--done)}#game .kt-prog i.bad{background:var(--warn)}
+@media (max-width:760px){#game .kt-item{width:56px}}
+/* 时间停着（关卡、犹豫时刻、讲往事）：时钟变灰、下面一道短线；玩家暂停另有闪烁（5-顶栏布局与细节） */
+#hudRow{position:relative}
+#clock.held{color:var(--ink2)}
+#clock.held:after{content:'';position:absolute;left:14%;right:14%;bottom:-3px;height:2px;border-radius:1px;background:currentColor;opacity:.55}
+/* 剧情里一下子过去的时间：“+N 分钟”在时钟下方淡出 */
+#clockJump{position:absolute;left:0;top:100%;margin-top:2px;font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap;opacity:0;pointer-events:none}
+#clockJump.on{animation:cjump 2.6s ease-out forwards}
+@keyframes cjump{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:none}75%{opacity:1}100%{opacity:0}}
+/* 赶时间（离约定不到 30 分钟他还在路上）：时钟琥珀色 */
+#clock.hurry{color:#d98a1f}
+#sheet .sethead{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+#sheet .sethead .ver{font-size:12px;font-weight:400;color:var(--ink2);opacity:.65;white-space:nowrap}   /* 设置标题行靠右：版本与构建时间，小字不抢眼 */

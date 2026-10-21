@@ -1,0 +1,38 @@
+:root{
+  /* ===== 设计表：颜色、尺寸、形状都在这里定义，其他地方只用 var(--…) ===== */
+  /* 颜色 */
+  --ink:#2b2a33; --ink2:#5b5866; --paper:#fffaf1; --paper2:#f3ead8; --line:#e0d3bb;
+  --accent:#e4774f; --accent2:#3f8f7a; --warn:#d9534f; --gold:#e8b64a; --blue:#4a7fc1;
+  --warn-dark:#b8433f; --gold-dark:#b88a2a; --wood:#6b5a4a; --mid-bg:#ffe3a3; --mid-ink:#6b4a00; --night:#2f3342; --night2:#5b6072; --night-deep:#1f2230;   /* 09-27：闹钟外壳、结果条“部分对”、来电抬头、开场黑幕 */
+  --shadow:0 6px 24px rgba(40,30,20,.18);
+  /* 尺寸与质感：圆角、玻璃面板、描边、阴影 */
+  --r1:2px;
+  --r2:4px;
+  --r3:6px;
+  --glass:rgba(255,252,246,.86);
+  --edge:rgba(255,255,255,.8);
+  --sh:0 3px 0 rgba(58,44,30,.13),0 10px 22px rgba(58,44,30,.10);
+  /* 语义颜色：青绿＝长期有效，紫＝只管今天，金＝精力，绿＝办成 */
+  --keep:#2f8f83;
+  --keep-bg:#e2f1ed;
+  --today:#8a6fc1;
+  --today-bg:#efeaf8;
+  --en:#f2c14e;
+  --en-ink:#5a3d00;
+  --done:#3f8f7a;
+  /* 低多边形形状（六边形、标签形、分面） */
+  --hex:polygon(25% 2%,75% 2%,100% 50%,75% 98%,25% 98%,0 50%);
+  --tag:polygon(7px 0,calc(100% - 7px) 0,100% 50%,calc(100% - 7px) 100%,7px 100%,0 50%);
+  --facet:linear-gradient(135deg,rgba(255,255,255,.22) 50%,rgba(0,0,0,.045) 50%);
+  /* 布局 */
+  --topW:312px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#cfe3e8;color:var(--ink);
+  font-family:"PingFang SC","Hiragino Sans GB","Noto Sans CJK SC","Microsoft YaHei",system-ui,sans-serif;
+  user-select:none;-webkit-user-select:none;touch-action:none}
+canvas#view{position:fixed;inset:0;width:100%;height:100%;display:block}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.hidden{display:none!important}
+
+

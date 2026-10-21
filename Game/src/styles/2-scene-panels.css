@@ -1,0 +1,236 @@
+/* 气泡（投影到 3D 位置） */
+#bubbles{position:fixed;inset:0;pointer-events:none;z-index:3}
+.bubble{position:absolute;transform:translate(-50%,-100%) scale(var(--bz,1));transform-origin:50% 100%;background:#fff;border-radius:var(--r2);padding:5px 10px;font-size:15px;font-weight:700;box-shadow:0 3px 10px rgba(0,0,0,.18);white-space:nowrap}
+.bubble:after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:#fff}
+.bubble.q{color:var(--blue)} .bubble.bad{color:var(--warn)} .bubble.good{color:var(--accent2)}
+.risk{position:absolute;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:50%;background:#ffd166;color:#5b3a00;font-weight:900;font-size:15px;display:grid;place-items:center;box-shadow:0 2px 6px rgba(0,0,0,.25);border:2px solid #fff}
+.risk.offr{background:#d5d8db;color:#5d6166;font-size:13px}   /* 他在这儿拐错了（路线变灰） */
+.tag{position:absolute;transform:translate(-50%,-50%);font-size:12px;font-weight:700;color:var(--ink);background:rgba(255,250,241,.85);padding:2px 7px;border-radius:var(--r2);white-space:nowrap}
+
+/* 犹豫时刻 */
+#moment{position:fixed;right:12px;top:calc(70px + env(safe-area-inset-top));z-index:8;width:min(460px,calc(100% - 24px));background:var(--paper);
+  border-radius:var(--r3);box-shadow:0 10px 40px rgba(40,30,20,.3);padding:16px;display:flex;flex-direction:column;gap:8px;border:3px solid var(--blue);
+  animation:tin .25s}
+#moment .mt{font-size:19px;font-weight:800;color:var(--blue)}
+#moment .mc{font-size:15px;color:var(--ink2);line-height:1.5;margin-bottom:4px}
+#moment .mnote{display:block;margin-top:6px;font-size:13px;color:var(--accent)}
+#moment button{background:var(--paper2);border-radius:var(--r2);padding:10px 14px;text-align:left;font-size:15px;font-weight:700}
+#moment button small{display:block;font-weight:400;font-size:12px;color:var(--ink2);margin-top:2px}
+#moment button.tell{background:#e8eef7}
+#moment button.letgo{background:none;border:1px dashed var(--line)}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:8px 0}
+@media (max-width:560px){.days{grid-template-columns:repeat(4,1fr)}}
+.daybtn{background:var(--paper2);border-radius:var(--r2);padding:8px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.daybtn{padding:8px 2px;min-width:0}.daybtn span{font-size:12px;white-space:nowrap}
+.daybtn b{font-size:18px}.daybtn span{font-size:13px}.daybtn i{font-style:normal;color:var(--gold);font-size:13px}
+.daybtn:disabled{opacity:.4}
+
+body.in-moment #feed{display:none}
+/* 小关卡 */
+#game{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:15;width:min(520px,calc(100% - 20px));max-height:calc(100% - 20px);overflow:auto;background:var(--paper);border-radius:var(--r3);box-shadow:0 12px 50px rgba(40,30,20,.35);padding:20px;border:3px solid var(--accent2)}
+#game .gt{font-size:19px;font-weight:800;margin-bottom:4px}
+#game .gs{font-size:14px;color:var(--ink2);line-height:1.5}
+#game .gk{font-size:13px;color:var(--accent2);font-weight:700}
+#game .gb{font-size:16px;line-height:1.8;margin:10px 0}
+#game .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:8px;margin:12px 0}
+#game .chip{background:var(--paper2);border-radius:var(--r2);padding:12px 6px;font-size:16px;font-weight:700;border:3px solid transparent}
+#game .chip.on{border-color:var(--blue);background:#e8eef7}
+#game .chip.ok{border-color:var(--accent2);background:#dff0e8}
+#game .chip.miss{border-color:var(--gold);background:#fff3d6}
+#game .chip.bad{border-color:var(--warn);background:#fbe3e1}
+#game .call{min-height:74px;display:grid;place-items:center;text-align:center;font-size:20px;font-weight:700;background:#fff;border-radius:var(--r3);margin:14px 0;padding:12px;transition:background .2s}
+#game .call.me{background:var(--paper2);color:var(--ink2)} #game .call.hit{background:#dff0e8;color:var(--accent2)} #game .call.miss{background:#fbe3e1;color:var(--warn)}
+#game .big{font-size:20px;padding:16px 28px}
+#game .row{margin-top:10px}
+#game>.row:last-child{position:sticky;bottom:-20px;z-index:3;background:var(--paper);padding:10px 0 20px;margin-bottom:-20px}   /* 小关卡内容长时，按钮行也固定在底部 */
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translate(-56%,-50%)}75%{transform:translate(-44%,-50%)}}
+.usechip{position:absolute;transform:translate(-50%,-100%);color:#fff;font-size:13px;font-weight:800;padding:3px 9px;border-radius:var(--r2);white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.bubble.list{white-space:normal;max-width:260px;text-align:center;line-height:1.5}
+.card .dur{font-size:10px;color:var(--accent2)}
+#dock.live .card .dur{display:none}
+.ach{background:#fff5e6;border-radius:var(--r2);padding:8px 12px;margin:8px 0;font-size:15px;animation:pop .5s both .9s}
+.used{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.used span{color:#fff;font-size:13px;font-weight:700;padding:3px 9px;border-radius:var(--r2)}
+
+
+/* 设置、提醒、适老化 */
+.segs{display:flex;gap:8px;flex-wrap:wrap}
+.seg{background:var(--paper2);border-radius:var(--r2);padding:12px 16px;font-size:16px;font-weight:700;border:3px solid transparent;min-height:48px}
+.seg.on{border-color:var(--accent);background:#fff1ea}
+#gearBtn{font-size:20px;padding:4px 8px;min-width:40px}
+.tagline{font-size:17px!important;color:var(--accent)!important;font-weight:700;margin-top:-2px!important}
+table.tasks{width:100%;border-collapse:collapse;font-size:15px;margin:8px 0}
+table.tasks td{padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.tasks small{color:var(--ink2)}
+.memo.warm{border-left-color:var(--gold);background:#fff9ec}
+ul.signs{margin:6px 0 10px;padding-left:22px;line-height:1.8;font-size:15px}
+button{min-height:40px}
+
+/* 地图操作 */
+#maplayer{position:fixed;inset:0;pointer-events:none;z-index:9}
+.mtag{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;min-height:0;padding:0;line-height:1;width:34px;height:34px;border-radius:50%;background:#fff;border:3px solid var(--ink2);font-weight:900;font-size:16px;color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.mtag.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.mtag.start{border-color:var(--accent);background:#fff1ea}
+.mtag.end{border-color:var(--accent2);background:#e6f4ee}
+.mtag.on.demo{background:#ffb03a;border-color:#ffb03a}
+.mtag[data-cap]::before{content:attr(data-cap);position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:3px;padding:1px 6px;border-radius:8px;background:rgba(255,255,255,.92);color:var(--ink2);font-size:12px;font-weight:700;white-space:nowrap;pointer-events:none}
+.mtag.fam{border-color:var(--gold);color:#b07d10;width:28px;height:28px;font-size:14px}
+.mtag.dot{width:20px;height:20px;border-width:2px;opacity:.85}
+.mtag.shake{animation:shake2 .35s}
+@keyframes shake2{25%{margin-left:-5px}75%{margin-left:5px}}
+.pen{position:absolute;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:#ffd166;box-shadow:0 0 16px 6px rgba(255,209,102,.8);pointer-events:none;transition:left .4s linear,top .4s linear}
+#mappanel{position:fixed;left:50%;transform:translateX(-50%);top:calc(12px + env(safe-area-inset-top));z-index:10;width:min(520px,calc(100% - 20px));background:var(--paper);border-radius:var(--r3);box-shadow:var(--shadow);padding:12px 16px;border:3px solid var(--blue)}
+#mappanel .mt{font-size:18px;font-weight:800;color:var(--blue)}
+#mappanel .mc{font-size:14px;color:var(--ink2);line-height:1.5;margin:4px 0}
+#mappanel .row{margin-top:6px}
+.nbtag{background:var(--keep)!important;color:#fff!important;font-size:13px!important;animation:pulse 1s infinite}
+.nbtag.done{background:#fff!important;color:var(--keep)!important;box-shadow:inset 0 0 0 2px var(--keep);animation:none}   /* 已拜托：白底青绿边＋✓；没拜托：青绿实底、闪 */
+.nbtag.idle{background:#8fa9a4!important;animation:none;opacity:.85}
+.selfmark{font-style:normal;font-size:12px;color:#fff;background:var(--accent2);border-radius:var(--r1);padding:1px 6px;margin-left:4px}
+.selfmark.half{background:var(--gold)}
+.gused i{font-style:normal;color:#fff;border-radius:var(--r1);padding:0 5px;margin-right:3px;font-size:12px}
+
+#game .flags{display:flex;flex-wrap:wrap;gap:6px;min-height:26px}
+#game .flags span{background:#dff0e8;color:var(--accent2);font-weight:700;font-size:13px;border-radius:var(--r2);padding:3px 8px}
+#game #scR button small{display:block;font-weight:400;font-size:12px;opacity:.85}
+#game #scR{flex-direction:column;align-items:stretch}
+#game .lesson{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+#game .lrow{background:#fff;border-radius:var(--r2);padding:8px 10px;font-size:14px;line-height:1.5;opacity:.75}
+#game .lrow.got{opacity:1;border-left:4px solid var(--accent2)}
+#game .lrow b{display:block}
+
+#game .boards{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+#game .board{width:min(150px,40vw);background:#f3d9a4;border-radius:var(--r2)}
+#game .board.big{width:min(230px,70vw)}
+#game .board line{stroke:#7a5230;stroke-width:.5}
+#game .board .river{font-size:4px;fill:#7a5230;text-anchor:middle}
+#game .board .pc circle{fill:#fff8e6;stroke-width:.8}
+#game .board .pc text{font-size:4.8px;text-anchor:middle;font-weight:800}
+#game .board .red circle{stroke:#c0392b}#game .board .red text{fill:#c0392b}
+#game .board .blk circle{stroke:var(--ink)}#game .board .blk text{fill:var(--ink)}
+#game .board .pc.bad circle{stroke:#e74c3c;stroke-width:1.6;fill:#fde2df}
+#game .board .pc.ok circle{fill:#e3f4ea}
+#game .board .hit{fill:transparent;cursor:pointer}
+@media (hover:hover){#game .board .hit:hover{fill:rgba(74,127,193,.18)}}   /* 只有真鼠标才有悬停：手机上点过之后圆圈不会一直留着 */
+#game #cB,#game .pc2{touch-action:none}
+/* 拖着走的东西（棋子、包饺子的东西）：同一种“拿在手上”的样子 */
+.dragghost{position:fixed;z-index:40;transform:translate(-50%,-50%) scale(1.1);pointer-events:none;display:grid;place-items:center;filter:drop-shadow(0 6px 10px rgba(0,0,0,.28))}
+.dragghost.pc{width:48px;height:48px;border-radius:50%;background:#fff8e6;font-weight:900;font-size:20px;border:3px solid;box-shadow:0 0 0 3px var(--accent)}
+.dragghost.pc.red{color:#c0392b;border-color:#c0392b}.dragghost.pc.blk{color:var(--ink);border-color:var(--ink)}
+#game .tray2{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;min-height:44px}
+#game .pc2{width:44px;height:44px;border-radius:50%;background:#fff8e6;font-weight:900;font-size:18px;border:3px solid}
+#game .pc2.red{color:#c0392b;border-color:#c0392b}#game .pc2.blk{color:var(--ink);border-color:var(--ink)}
+
+
+#game .phone{background:var(--ink);color:#fff;border-radius:var(--r3);padding:16px;text-align:center;margin:4px auto 8px;max-width:260px}
+#game .phone .ph-who{font-size:14px;opacity:.8}#game .phone .ph-name{font-size:22px;font-weight:800;margin:4px 0}#game .phone .ph-num{font-size:14px;opacity:.7}
+#game .phone.ring{animation:ring .5s infinite}
+@keyframes ring{0%,100%{transform:rotate(0)}25%{transform:rotate(-2deg)}75%{transform:rotate(2deg)}}
+
+#game .sms{background:#fff;color:var(--ink);border-radius:var(--r2);padding:10px 12px;margin-top:8px;font-size:15px;line-height:1.6;text-align:left}
+#game .sms b{font-size:20px;letter-spacing:.12em;color:var(--accent)}
+#game .phone .bar{height:4px;background:rgba(255,255,255,.2);border-radius:var(--r1);margin-top:8px;overflow:hidden}
+#game .phone .bar i{display:block;height:100%;width:100%;background:#ffd166}
+@keyframes shrink{to{width:0}}
+
+/* 电话指路：无文字的地图标记 */
+.mtag.r{border:0;box-shadow:none;background:none;font-size:13px;color:#b07d10;display:grid;place-items:center}
+.mtag.r.dim{width:9px;height:9px;background:rgba(255,255,255,.75);border-radius:50%;pointer-events:none}
+.mtag.r.dim.fam{width:16px;height:16px;background:rgba(255,250,230,.9);font-size:11px}
+.mtag.r.on{width:12px;height:12px;background:var(--accent);border-radius:50%;pointer-events:none}
+.mtag.r.on.fam{width:18px;height:18px;color:#fff;font-size:11px}
+.mtag.r.next{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.9);border:3px solid var(--accent);animation:nextp 1.1s infinite}
+.mtag.r.next.fam{background:#fff4d6}
+.mtag.r.me{width:26px;height:26px;border-radius:50%;background:rgba(228,119,79,.25);border:3px solid var(--accent);pointer-events:none;animation:mep 1.4s infinite}
+.mtag.r.goal{width:30px;height:30px;border-radius:50% 50% 50% 4px;transform:translate(-50%,-100%) rotate(-45deg);background:var(--accent2);color:#fff;font-size:15px}
+.mtag.r.goal{line-height:1}
+.mtag.head{cursor:grab;touch-action:none}
+.mtag.head::after{content:'';position:absolute;inset:-12px;border-radius:50%}
+.mtag.r.head{width:26px;height:26px;border-radius:50%;background:rgba(228,119,79,.3);border:3px solid var(--accent);pointer-events:auto;animation:mep 1.4s infinite}
+.swline{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.swline path{fill:none;stroke:rgba(228,119,79,.85);stroke-width:5;stroke-linecap:round;stroke-dasharray:10 8;animation:swDash .6s linear infinite}
+.swline circle{fill:rgba(228,119,79,.9);stroke:#fff;stroke-width:3}
+@keyframes swDash{to{stroke-dashoffset:-18}}
+@keyframes nextp{50%{box-shadow:0 0 0 7px rgba(228,119,79,.25)}}
+@keyframes mep{50%{box-shadow:0 0 0 10px rgba(228,119,79,.18)}}
+.lg-star{color:#b07d10}
+
+#game.wide{width:min(780px,calc(100% - 16px))}
+#game .board.big{width:min(430px,86vw,calc((100dvh - 215px) * .9))}   /* 棋盘按屏幕高度收，整关不用滚动 */
+#game .boards>div:first-child .board{width:min(200px,40vw)}
+/* 摆棋：棋子盒放在棋谱旁边——桌面在棋谱下面（左栏），手机和棋谱并排（上面一行），省出高度给棋盘 */
+#game .refcol{display:flex;flex-direction:column;gap:8px}
+#game .refcol .tray2{display:grid;grid-template-columns:repeat(4,auto);justify-content:start;gap:6px;margin:0}
+@media (max-width:760px){#game .boards{flex-direction:column;align-items:center}#game .refcol{flex-direction:row;align-items:flex-end}#game .refcol .tray2{grid-template-columns:repeat(3,auto)}#game .boards>div:first-child .board{width:min(160px,42vw)}
+  /* 手机摆棋：省掉小标题和“棋谱／棋盘”字样、边距收窄，把高度让给棋盘（棋盘撑满宽度，再按屏高收） */
+  #game.chessg{padding:12px;padding-top:16px!important}
+  #game.chessg .gk,#game.chessg .boards .gs{display:none}
+  #game.chessg .gt{font-size:17px}
+  #game.chessg .boards{margin:6px 0;gap:8px;align-items:stretch}
+  #game.chessg .boards>div:last-child,#game.chessg #cBoard{display:flex;justify-content:center;width:100%}
+  #game.chessg .board.big{width:min(100%,calc((100dvh - 400px) * .9))}
+  #game.chessg .refcol{width:100%;justify-content:center}#game.chessg .refcol>div:first-child{flex:0 1 160px;min-width:0}#game.chessg .refcol>div:first-child .board{width:100%}#game.chessg .refcol .pc2{width:44px;height:44px;font-size:19px}   /* 字号调大时棋谱缩一点，棋子盒不挤出去 */
+  #game.chessg>.row:last-child{bottom:-12px;padding-bottom:12px;margin-bottom:-12px}
+}
+#game .pc2{width:48px;height:48px;font-size:20px}
+
+/* 新关卡 */
+#game .stall{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:6px;margin:10px 0;background:#f4e6cc;border-radius:var(--r3);padding:8px}
+#game .food,#game .spot{background:#fff;border-radius:var(--r2);padding:6px 2px;border:3px solid transparent;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:13px;font-weight:700}
+#game .food i,#game .spot i{font-style:normal;font-size:26px;line-height:1.1}
+#game .food.on{border-color:var(--blue);background:#e8eef7}
+#game .food.ok{border-color:var(--accent2);background:#dff0e8}
+#game .food.miss{border-color:var(--gold);background:#fff3d6}
+#game .food.bad{border-color:var(--warn);background:#fbe3e1}
+#game .food.gone{opacity:.15;pointer-events:none}
+#game .food.used{opacity:.35}
+@media (max-width:760px){#game .stall{grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:5px;padding:6px}#game .food{padding:4px 1px}#game .food i svg{width:36px;height:36px}}   /* 手机：一行多摆几样、图小一点，整个菜摊一屏放下 */
+#game .basket{font-size:14px;color:var(--ink2);min-height:22px}
+#game .say{min-height:64px;display:grid;place-items:center;text-align:center;font-size:19px;background:#fff;border-radius:var(--r3);margin:12px 0;padding:10px}
+#game .say.big{font-size:40px;font-weight:800;letter-spacing:.15em;font-variant-numeric:tabular-nums}
+#game .say.item b{font-size:28px;color:var(--accent)}
+#game .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+#game .keypad button{background:var(--paper2);border-radius:var(--r2);padding:12px;font-size:22px;font-weight:800}
+#game .keypad .okk{background:var(--accent);color:#fff;font-size:16px}
+#game .clockwrap{position:relative;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin:44px 0 18px}
+#game .clockwrap svg{width:min(260px,70vw);height:min(260px,70vw);touch-action:none}
+#game .face{fill:#fffdf6;stroke:var(--ink);stroke-width:3}
+
+#game .pin{fill:var(--accent)}
+#game .tray{display:grid;grid-template-columns:repeat(4,34px);gap:6px}
+#game .num{width:34px;height:34px;border-radius:50%;background:var(--paper2);display:grid;place-items:center;font-weight:800;cursor:grab;touch-action:none;transform:translate(0,0);z-index:2}
+
+#game .num.drag,#game .num.placed{transform:translate(-50%,-50%);background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+#game .handsel{display:flex;gap:6px}#game .handsel .on{background:var(--ink);color:#fff}
+#game .kitchen .krow{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+#game .kitchen .food,#game .kitchen .spot{flex:1;min-width:70px}
+#game .kitchen .spot{background:#f4e6cc}
+
+/* 弹窗 */
+.modal{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:rgba(43,42,51,.45);padding:16px}
+@media (max-width:760px){.modal{padding:10px}}
+.sheet{background:var(--paper);border-radius:var(--r3);box-shadow:var(--shadow);padding:26px 26px 22px;width:min(560px,100%);max-height:calc(100% - 20px);overflow:auto}
+.sheet h1{margin:0 0 6px;font-size:30px}
+.sheet h2{margin:0 0 10px;font-size:24px}
+.sheet p{font-size:16px;line-height:1.7;margin:8px 0;color:var(--ink)}
+.sheet .sub{color:var(--ink2);font-size:14px}
+.stars{display:flex;gap:16px;margin:14px 0}
+.star{flex:1;background:var(--paper2);border-radius:var(--r3);padding:10px;text-align:center}
+.star .s{font-size:30px;color:#cfc3ab}
+.star.on .s{color:var(--gold)}
+.star.pop{animation:pop .5s both}
+@keyframes pop{0%{transform:scale(.6);opacity:.3}60%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+.star b{display:block;font-size:14px}
+.star small{color:var(--ink2);font-size:12px}
+.memo{background:#fff;border-left:4px solid var(--accent2);padding:10px 14px;border-radius:var(--r2);margin:12px 0;font-size:15px;line-height:1.7}
+.memory{background:#fff5e6;border-left:4px solid var(--gold);padding:10px 14px;border-radius:var(--r2);margin:12px 0;font-size:15px;line-height:1.8;font-style:italic}
+.timeline{font-size:14px;color:var(--ink2);line-height:1.8;max-height:160px;overflow:auto;background:var(--paper2);border-radius:var(--r2);padding:8px 12px}
+.row{display:flex;gap:10px;align-items:center;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+/* 弹窗的按钮行（返回、下一天、知道了……）统一在右下角，内容长时固定在底部，不用滚到最后才找得到 */
+.modal:not(.title) .sheet:has(>.row:last-child){padding-bottom:0}
+.modal:not(.title) .sheet>.row:last-child{position:sticky;bottom:0;z-index:3;background:var(--paper);margin:12px -26px 0;padding:12px 26px 20px}
+/* 按钮行统一：提示文字最左 → 次要按钮 → 主要按钮最右下 */
+.row>.gs,.row>span:not([class*=btn]){order:0;margin-right:auto;text-align:left}
+.row>span:has(button){margin-right:0;margin-left:auto}   /* 说明文字的位置后来换成了按钮：按钮仍在右边 */
+.row>.ghost{order:1}.row>.primary{order:2}

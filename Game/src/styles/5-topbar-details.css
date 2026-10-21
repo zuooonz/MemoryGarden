@@ -1,0 +1,194 @@
+/* 手机顶部不挤：爷爷块宽度＝屏幕宽减时间框（运行时算）；折叠时只留标题一行 */
+@media (max-width:760px){
+  #gp{min-width:0}
+  .gpt b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #gp.collapsed .gpt small{display:none}
+  #gp.collapsed #gpStats span{min-width:40px;padding:0 6px 0 5px}
+  #hudR{gap:0}
+  #hudR>button{width:30px;min-width:0}
+  #clock{font-size:17px;width:2.9em;margin-right:2px}
+}
+/* 桌面：顶部两块同高（56）——时间框，与爷爷块的头部一行／折叠后的整块 */
+@media (min-width:761px){
+  #hudR{height:56px;border-radius:var(--r3)}
+  #gp{padding:6px 12px 10px}
+  #gpHead{height:44px}
+  #gpFace svg{width:40px;height:40px}
+  #gp.collapsed{height:56px;padding-bottom:6px}
+  #gpBody{margin-top:8px}
+}
+/* 时间块两行：上行时间与速度；下行（展开时）薄雾、跟随、静观、手册、设置。桌面默认展开，与爷爷块同高；手机默认一行 */
+#hudR{flex-direction:column;align-items:stretch;height:auto;padding:0 6px 0 16px}
+/* 桌面：左上、右上、左下（白天收起的道具箱）三块同宽 --topW；右上块左右内边距对称，时间靠左，暂停＋三档速度＋菜单一组靠右，间距一致 */
+
+@media (min-width:761px){
+  #leftCol{width:var(--topW)}
+  #hudR{width:var(--topW);box-sizing:border-box;padding:0 12px!important}
+  #hudRow{gap:6px}
+  #clock{margin-right:auto}
+  #spdSeg{margin-left:0!important}
+  #menuBtn{margin-left:4px}
+  #hudR #menu{padding:4px 0 10px;justify-content:space-between}
+}
+#hudRow{display:flex;align-items:center;gap:4px;height:54px}   /* 加上下边框 1px＝56 */
+#hudRow>button{width:36px;height:36px;min-height:0;border-radius:var(--r2);display:grid;place-items:center;color:var(--ink2);font-weight:800;font-size:13px}
+@media (hover:hover){#hudRow>button:hover{background:rgba(91,88,102,.08)}}
+#hudR #menu{position:static;display:none;min-width:0;padding:4px 0 10px;background:none;box-shadow:none;border:0;border-top:1px solid rgba(91,88,102,.1);flex-direction:row;justify-content:space-between;gap:2px}
+#hudR.open #menu{display:flex;flex:1;align-items:center}
+#hudR #menu button{flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px 4px;font-size:12px;border-radius:var(--r2);min-width:40px}
+#hudR #menu button small{display:none}
+#hudR.open #menuBtn{background:var(--ink);color:#fff}
+body.watch #hudRow>button,body.watch #hudR #menu{display:none}
+@media (max-width:760px){
+  #hudRow{height:50px}
+  #hudR{padding:0 4px 0 10px}
+  #hudR.open{box-shadow:var(--sh),0 8px 24px rgba(40,30,20,.18)}
+  /* 手机顶部（手风琴）：两条固定一行、永远不变；展开的内容放在下面这张整宽卡片里，同时只开一个 */
+  #topSheet{pointer-events:auto;padding:8px 10px;border-radius:var(--r3)}
+  #topSheet #gpBody{display:block;margin-top:0}
+  #topSheet #menu{position:static;display:flex;flex-direction:row;justify-content:space-around;min-width:0;padding:0;margin:0;background:none;box-shadow:none;border:0}
+  #topSheet #menu button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px 4px;font-size:12px;font-weight:700;border-radius:var(--r2);min-width:52px;min-height:0}
+  #topSheet #menu button small{display:none}
+  #gp.sheet-on #gpHead{background:#e8eef7;border-radius:var(--r2)}
+}
+/* 小屏手机（≤400）：右上按钮收窄，给左边标题留地方；标题最多两行，不截断（每天标题最长 4 个字） */
+@media (max-width:400px){
+  #hudRow>button{width:30px}#hudRow{gap:2px}#hudR{padding:0 2px 0 8px!important}
+  #gp.collapsed{padding-left:8px;padding-right:8px}#gpHead{gap:6px}
+  #gpFace svg{width:34px;height:34px}
+  .gpt b{white-space:normal;font-size:15px;letter-spacing:0;line-height:1.15;text-wrap:balance;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  #hudR.open{box-shadow:var(--sh)}
+}
+/* 暂停：时间数字变暗、轻轻闪；暂停／速度在早上布置时变灰 */
+body.paused #clock{color:var(--ink2);animation:pblink 1.6s ease-in-out infinite}
+@keyframes pblink{50%{opacity:.45}}
+#hudRow>button:disabled{opacity:.3;cursor:default}
+/* 速度：桌面把 1×/2×/4× 并排摆出来（一眼看到当前档，一下点到想要的档）；手机地方小，仍是一个按钮轮换 */
+#spdSeg{display:none}
+@media (min-width:761px){
+  #hudR #speedBtn{display:none}
+  #spdSeg{display:flex;gap:2px;margin-left:auto;background:rgba(91,88,102,.07);border-radius:var(--r2);padding:2px}
+  #spdSeg button{width:34px;height:32px;min-height:0;border-radius:var(--r2);font-weight:800;font-size:13px;color:var(--ink2)}
+  #hudRow>#pauseBtn,#hudRow>#menuBtn{width:34px;height:32px;border-radius:var(--r2)}   /* 选中时的深色块：暂停、三档速度、菜单一样大 */
+  #spdSeg button.on{background:var(--ink);color:#fff}
+  #spdSeg button:disabled{opacity:.35;cursor:default}
+  body.paused #spdSeg button.on{background:rgba(91,88,102,.35)}
+}
+.modal.hb .sheet{width:min(1120px,100%);padding-top:0}
+.hb-head{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 -26px 4px;padding:18px 26px 10px;background:var(--paper);border-bottom:1px solid var(--line)}
+.hb-head h2{margin:0}
+.hb-lay section>h3:first-child{margin-top:12px}
+@media (min-width:900px){
+  .hb-lay{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);column-gap:24px;align-items:start}
+}
+/* 菜摊：钱包与价签；结账时装袋 */
+#game .ck-row{display:flex;gap:10px;align-items:center;margin:10px 0 4px}
+#game .ck-bag{flex:1;display:flex;flex-wrap:wrap;align-items:center;gap:2px;min-height:44px;padding:4px 10px;background:#efe6d2 var(--facet);border-radius:var(--r2)}
+#game .ck-bag i{animation:ktdrop .25s}
+#game .ck-next{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700}
+#game .food .pz{font-style:normal;font-size:11px;font-weight:700;color:#b8433a;background:#fff3ef;border-radius:var(--r1);padding:0 5px;margin-top:1px}
+#perfPanel{position:fixed;left:50%;transform:translateX(-50%);bottom:4px;z-index:50;font:12px/1.4 ui-monospace,Menlo,monospace;color:#fff;background:rgba(0,0,0,.6);padding:3px 10px;border-radius:var(--r1);pointer-events:none;white-space:nowrap}
+body.no-blur .glass,body.no-blur .msg,body.no-blur #muse,body.no-blur .toast{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background-color:rgba(255,252,246,.97)}
+
+/* ---------- 按下反馈（统一：所有可点的东西按下都有回应；P2i 交互统筹） ---------- */
+button, .tile, .card, .chip, .mtag, #game .food, #game .kt-item, #game .kt-hl { transition: transform .08s ease-out, filter .08s ease-out, background-color .12s }
+button:not(:disabled):active, .tile:not(:disabled):active, .card:not(:disabled):active, .chip:active, #game .food:active, #game .kt-item:active { transform: scale(.95); filter: brightness(.93) }
+.mtag:active { transform: translate(-50%, -50%) scale(.9) }
+#game .keypad button:not(:disabled):active { background: var(--accent); color: #fff; transform: scale(.92) }
+/* 输入的数字：新输入的那一位弹一下 */
+#game .typed-new { display: inline-block; animation: typedPop .22s ease-out }
+@keyframes typedPop { 0% { transform: scale(1.5); color: var(--accent) } 100% { transform: none } }
+
+/* ---- 小关卡同类操作一个手感（Docs/交互规范.md）---- */
+/* 拿起：抬起一点、橙色描边（修闹钟的数字、棋子、包饺子的东西都一样） */
+#game .num.held, #game .pc2.held, #game .kt-item.held .ic { box-shadow: 0 0 0 3px var(--accent), 0 6px 12px rgba(0,0,0,.18); transform: translateY(-3px) scale(1.08) }
+#game .num.held.placed { transform: translate(-50%,-50%) scale(1.12) }
+#game .kt-item.held .ic { background: #fff }
+/* 拿着东西时，能放的地方亮起来 */
+#game .clockwrap.holding .face { stroke: var(--accent); stroke-width: 4 }   /* 拿着数字：钟面外圈变成橙色实线光圈（原来虚线像出了故障） */
+#game .kt-drop.last { cursor: pointer }
+/* 还没做就按完成：抖一下 */
+#game .nudge { color: var(--accent); animation: nudge .35s }
+@keyframes nudge { 25% { transform: translateX(-5px) } 75% { transform: translateX(5px) } }
+/* 结果：全对绿、部分琥珀、没对上灰（同一行、同一种样子） */
+#game .gres { display: inline-block; font-weight: 800; padding: 2px 10px; border-radius: var(--r1); animation: pop .3s ease-out }
+#game .gres.good { color: #fff; background: var(--done) }
+#game .gres.mid { color: var(--mid-ink); background: var(--mid-bg) }
+#game .gres.bad { color: var(--ink); background: var(--paper2) }
+#game .say.big.gres { display: block; font-size: 20px; padding: 6px 10px }
+@media (prefers-reduced-motion: reduce) { button, .tile, .card, .chip, .mtag { transition: none } #game .typed-new, #game .nudge, #game .gres { animation: none } }
+/* 矮屏手机（360×740 一类）：菜摊钱包那行收紧，整个菜摊一屏放下 */
+@media (max-width:760px) and (max-height:760px) { #game .mk-top { margin-top: 34px } #game .mk-vendor { top: -40px } }
+/* ---- 开场（opening.js）：只留画面、人物气泡、地名；底部一两句字，右下角跳过 ---- */
+body.opening :is(#modal, #leftCol, #hudR, #dock, #hint, #feed) { display: none }   /* 靠 id 级选择器优先，不用强制优先级 */
+/* 开场里不显示地名（10-14 用户：镜头拉远时满屏都是地名，抢了爷爷和雾的戏）；开场结束后地名淡入 */
+#bubbles .tag { transition: opacity .8s ease }
+body.opening #bubbles .tag { opacity: 0 }
+#opening { position: fixed; inset: 0; z-index: 30; pointer-events: none }
+#opening .op-fade { position: absolute; inset: 0; background: var(--night-deep); opacity: 1; transition: opacity 1.2s ease }
+#opening.in .op-fade { opacity: 0 }
+#opening.out { opacity: 0; transition: opacity 1.2s ease }   /* 结尾：字和标题淡出，镜头已在进游戏的视角，不再压暗（10-14） */
+#opening .op-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 60px 16px 13vh; text-align: center; background: linear-gradient(transparent, rgba(24, 28, 44, .42)); opacity: 0; transition: opacity 1.2s }
+#opening .op-cap:has(p.on) { opacity: 1 }
+#opening .op-cap p { margin: 6px auto; max-width: 30em; font-size: clamp(18px, 2.4vw, 26px); font-weight: 700; color: #fff; text-shadow: 0 2px 10px rgba(20, 24, 40, .55); opacity: 0; transform: translateY(6px); transition: opacity 1.2s ease, transform 1.2s ease }
+#opening .op-cap p.on { opacity: 1; transform: none }
+#opening #opSkip { position: absolute; right: 16px; bottom: 16px; pointer-events: auto; z-index: 2 }
+/* 标题卡：设置是右上角的齿轮（最不常用）；玩过第 1 天后，“选择一天”那行末尾有个不起眼的「开场动画」 */
+#sheet { position: relative }
+#sheet #bSet { position: absolute; top: 12px; right: 12px; min-height: 0; width: 36px; height: 36px; padding: 0; display: grid; place-items: center }
+#sheet .linkbtn { background: none; border: 0; padding: 0 0 0 10px; min-height: 0; font: inherit; color: var(--ink2); text-decoration: underline; text-underline-offset: 3px; cursor: pointer }
+/* 标题卡的按钮都是两个字：手机上收窄内边距，一行放下（手册、记忆、重置、继续） */
+@media (max-width:760px) { #modal.title .row { flex-wrap: nowrap; gap: 6px } #modal.title .row button { padding-left: 12px; padding-right: 12px; min-width: 0 } }
+.nowrap { white-space: nowrap }
+/* 修闹钟：双铃闹钟的外壳（画在钟面外，钟面坐标不变）；修好了摇铃 */
+#game #cSvg { overflow: visible }
+#game .ck-rim { fill: var(--warn); stroke: var(--warn-dark); stroke-width: 3 }
+#game .ck-b { fill: var(--gold); stroke: var(--gold-dark); stroke-width: 3 }
+#game .ck-leg { stroke: var(--wood); stroke-width: 8; stroke-linecap: round }
+#game .clockwrap.ringing #cSvg { animation: ckRing .09s linear 12 alternate }
+#game .clockwrap.ringing .ck-bell { animation: ckBell .08s linear 14 alternate }
+@keyframes ckRing { from { transform: rotate(-2.5deg) } to { transform: rotate(2.5deg) } }
+@keyframes ckBell { to { translate: 0 -3px } }
+@media (prefers-reduced-motion: reduce) { #game .clockwrap.ringing #cSvg, #game .clockwrap.ringing .ck-bell { animation: none } }
+/* 诈骗电话：来电抬头（陌生号码、通话计时）＋最近三句对话记录，当前这句在最下面大字显示 */
+#game .sc-phone { display: flex; align-items: center; gap: 10px; margin: 10px 0 4px; padding: 8px 12px; background: var(--night); color: #fff; border-radius: var(--r3) }
+#game .sc-phone b { display: block; font-size: 15px } #game .sc-phone small { font-size: 12px; opacity: .75; font-variant-numeric: tabular-nums }
+#game .sc-av { width: 34px; height: 34px; border-radius: 50%; background: var(--night2); display: grid; place-items: center; font-weight: 900 }
+#game .sc-hist { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; max-height: 108px; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: smooth }
+#game .sc-hist .h { align-self: flex-start; max-width: 85%; padding: 5px 10px; border-radius: var(--r2); background: #fff; color: var(--ink2); font-size: 14px; opacity: .8 }
+#game .sc-hist .h.me { align-self: flex-end; background: var(--paper2) }
+#game .sc-hist .h.hit { box-shadow: inset 3px 0 0 var(--accent2) } #game .sc-hist .h.miss { box-shadow: inset 3px 0 0 var(--warn) }
+#game .sc-hist .h:not(:last-child) { opacity: .55 }
+/* 修闹钟：没摔掉的数字像印在钟面上（不是能拿起的圆片），不能拖 */
+#game .num.fixed { background: none; box-shadow: none; cursor: default; color: var(--ink2) }
+/* 开场收尾：两句字收起，标题大字淡入 */
+#opening .op-cap.gone, #opening .op-cap.gone:has(p.on) { opacity: 0 }
+#opening .op-title { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; transition: opacity 1.6s ease; pointer-events: none }
+#opening .op-title.on { opacity: 1 }
+#opening .op-title h1 { margin: 0; font-size: clamp(40px, 7vw, 84px); font-weight: 900; letter-spacing: .12em; color: #fff; text-shadow: 0 4px 30px rgba(20, 24, 40, .55) }
+/* 结局：他记得的事（他的口吻，引号、稍大一点） */
+.wk-echo { margin: 6px 0 12px } .wk-echo .echo { margin: 4px 0; padding: 6px 12px; border-left: 3px solid var(--accent2); background: var(--paper2); font-size: 16px; color: var(--ink) }
+/* 修闹钟：钟面上叠一层数字层，和钟面一样大；放好的数字按百分比定位，钟面挪到哪数字跟到哪 */
+#game .ck-face { position: relative; line-height: 0; flex: 0 0 auto }
+#game .ck-layer { position: absolute; inset: 0; pointer-events: none; line-height: normal }
+#game .ck-layer .num { pointer-events: auto }
+/* 修闹钟：时针叶片形、分针箭头；拖着的那根变橙色；钟面上原有的数字不挡手指 */
+#game .hand path { fill: var(--ink); stroke: #fffdf6; stroke-width: 1.2; stroke-linejoin: round }
+#game .hand { filter: drop-shadow(0 1.5px 1px rgb(0 0 0 / .22)) }
+#game .hand .hole { fill: #fffdf6 }
+#game #cSvg.turning-h #hH path, #game #cSvg.turning-m #hM path { fill: var(--accent) }
+#game .pin-dot { fill: #fffdf6 }
+#game .ck-layer .num.fixed { pointer-events: none }
+
+/* 电话里的犹豫时刻（他打来／你打给他）：标题前一枚电话标签，和“他在想事”分开（09-27） */
+#moment .mcall { display: inline-flex; align-items: center; gap: 4px; margin-right: 8px; padding: 1px 8px 1px 6px; border-radius: var(--r2); background: var(--accent); color: #fff; font-size: .78em; vertical-align: 2px }
+#moment .mcall svg { stroke: currentColor }
+/* 暂停：游戏里的面板稍暗、点了不响应（hud.guardPause）；点了的话暂停键闪一下、底部提示“点继续” */
+body.paused #game,body.paused #moment,body.paused #dock,body.paused #actions,body.paused #mappanel,body.paused #maplayer{filter:saturate(.55);opacity:.82;cursor:not-allowed}
+#pauseBtn.nudge{animation:pnudge .45s ease-in-out 2}
+@keyframes pnudge{50%{box-shadow:0 0 0 8px rgba(228,119,79,.45);transform:scale(1.12)}}
+#pauseTip{position:fixed;left:50%;bottom:calc(120px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;background:var(--ink);color:#fff;font-size:16px;font-weight:700;padding:10px 18px;border-radius:var(--r3);opacity:0;pointer-events:none;transition:opacity .25s}
+#pauseTip.on{opacity:.94}
+/* 换场（presence.sceneCut，10-14）：整屏暗一下，暗着的时候摆人、换镜头，玩家看不到瞬移 */
+#sceneCut{position:fixed;inset:0;z-index:12;pointer-events:none;background:var(--night-deep);opacity:0;transition:opacity .35s ease}
+#sceneCut.on{opacity:1}

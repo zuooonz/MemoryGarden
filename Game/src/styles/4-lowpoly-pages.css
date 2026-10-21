@@ -1,0 +1,128 @@
+/* ===== 设计语言：低多边形（第 10 轮）——和小镇一致：棱角、平面分块、斜向分面 ===== */
+
+.tile .ic{border-radius:var(--r2);background-image:var(--facet)}
+.tile.act .ic{border-radius:0;clip-path:var(--hex);width:48px}
+.tile.go .ic,.tile.act .ic{box-shadow:none}
+.tl .tic{border:0;border-radius:0;clip-path:var(--hex);width:36px;background-color:color-mix(in srgb,var(--c) 16%,#fff);background-image:var(--facet);animation:none!important}
+.tl.now .tic{background-color:var(--c);color:#fff}
+.tl.done .tic{background-color:var(--done)}.tl.done.helped .tic{background-color:var(--blue)}
+.tl.partial .tic{background-color:var(--gold)}.tl.fail .tic{background-color:#f1d9d6}
+.tl.now .tic{animation:hexp 1.6s ease-in-out infinite!important}
+@keyframes hexp{50%{transform:scale(1.1)}}
+.tl:not(:last-child):after{top:17px;left:calc(50% + 19px);right:calc(-50% + 19px)}
+.msg .mi{border-radius:0;clip-path:var(--hex);width:26px;background-image:var(--facet)}
+#hudR>button{border-radius:var(--r2)}
+#pauseBtn.on{clip-path:none}
+#gpStats span,#energy .num,#gpMore,.card .cost,.card .new{border-radius:0;clip-path:var(--tag);box-shadow:none}
+#gpStats span{padding:0 10px 0 9px}#gpMore{padding:0 10px 0 8px}#energy .num{padding:0 11px}
+.card .cost{padding:0 7px}.card .new{padding:0 6px}
+#gp,#hudR,#dock,#actions,#menu,.msg,#moment,#game,.sheet,#mappanel{border-radius:var(--r3)}
+#muse{border-radius:var(--r2)}
+.bubble,.tag{border-radius:var(--r2)}
+.risk{border-radius:0;clip-path:var(--hex);border:0;width:26px;height:24px}
+#vignette{position:fixed;inset:0;pointer-events:none;z-index:2;--vig:.16;background:radial-gradient(ellipse 75% 70% at 50% 48%,transparent 55%,rgba(30,28,48,var(--vig)) 100%)}
+body.at-title #bubbles{display:none}
+/* 标题画面：不压暗小镇，标题卡片靠左 */
+.modal.title{background:linear-gradient(90deg,rgba(43,42,51,.28),rgba(43,42,51,0) 55%);justify-items:start;padding-left:max(24px,6vw)}
+.modal.title .sheet{width:min(520px,100%);background:rgba(255,252,246,.9);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+@media (max-width:760px){.modal.title{justify-items:center;padding-left:16px;background:rgba(43,42,51,.2)}}
+/* 新手引导：要点的地方闪一圈 */
+.coach{position:relative;animation:coachp 1.2s ease-in-out infinite;z-index:7}
+.tile.coach .ic,.card.coach .ic{box-shadow:0 0 0 3px var(--accent)}
+.tile.ping .ic{box-shadow:0 0 0 3px var(--accent);animation:hexp .5s ease-in-out 3}   /* 路口时机窗口：电话按钮亮一下 */
+#moment.coach{box-shadow:0 0 0 4px rgba(228,119,79,.55),0 10px 40px rgba(40,30,20,.3)}
+.risk.coach{transform:translate(-50%,-50%) scale(1.35);box-shadow:0 0 0 4px rgba(228,119,79,.6)}
+@keyframes coachp{50%{filter:brightness(1.08)}}
+.wk-used{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px}
+.wk-used span{display:flex;align-items:center;gap:6px;background:var(--paper2);border-radius:var(--r2);padding:4px 10px 4px 6px;font-size:14px}
+.wk-used span.top{background:var(--keep-bg);box-shadow:inset 0 0 0 2px var(--keep)}
+.wk-used i{font-style:normal;color:var(--ink2);font-size:12px}
+/* 小关卡与犹豫时刻：和其他面板同一种样子，顶部一道类别色（绿＝小关卡，蓝＝犹豫时刻） */
+#game{border:0;border-radius:var(--r3);box-shadow:inset 0 5px 0 var(--accent2),0 3px 0 rgba(58,44,30,.13),0 16px 50px rgba(40,30,20,.3);padding-top:24px}
+#moment{border:0;border-radius:var(--r3);box-shadow:inset 0 5px 0 var(--blue),0 3px 0 rgba(58,44,30,.13),0 12px 40px rgba(40,30,20,.28)!important;padding-top:20px}
+#moment button,#game .keypad button,#game .chip,.seg,.daybtn,.ghost,.primary{border-radius:var(--r2)}
+.usechip{display:flex;align-items:center;gap:4px;background:rgba(255,252,246,.95);color:var(--ink);box-shadow:0 2px 0 rgba(58,44,30,.12);border-radius:var(--r2);padding:2px 8px 2px 4px}
+.used span,.gused i{display:inline-flex;align-items:center;gap:4px;background:var(--paper2);color:var(--ink);border-radius:var(--r2)}
+.gused i{padding:1px 6px 1px 2px}
+.hb-h{display:flex;align-items:center;gap:8px}
+/* 菜摊 */
+#game .mk-top{position:relative;margin:48px 0 0}   /* 上面空出摊主站的位置（摊主头像往上探 54 像素），不压住说明文字 */
+#game .awning{display:block;width:100%;height:26px}
+#game .mk-vendor{position:absolute;right:6px;top:-54px;display:flex;align-items:flex-start;gap:6px;flex-direction:row-reverse}
+#game .vendor{width:52px;height:72px}
+#game .mk-say{background:#fff;border-radius:var(--r2);padding:6px 10px;font-size:14px;font-weight:700;box-shadow:0 2px 0 rgba(58,44,30,.12);white-space:nowrap;margin-top:4px}
+#game .mk-say.pop{animation:tin .25s}
+@media (max-width:760px){#game .mk-say{white-space:normal;max-width:calc(100vw - 210px);font-size:13px;padding:4px 8px;position:relative;z-index:2}}   /* 手机：摊主的话换行，不挡左边“带了 100 元” */
+#game .stall{background:#e6cf9f var(--facet);border-radius:0 0 var(--r2) var(--r2);margin-top:0}
+#game .food{border-radius:var(--r2)}
+#game .food i svg{display:block;margin:0 auto}
+#game .basket{display:flex;align-items:center;gap:8px;min-height:40px;margin-top:8px}
+#game .bk-l{font-size:13px;color:var(--ink2);font-weight:700}
+#game .bk-items{display:flex;gap:2px;flex-wrap:wrap}
+#game .bk-items i{animation:ktdrop .25s}
+/* 结算：帮助方式与心情账 */
+.sm-h{font-size:16px;margin:14px 0 6px}
+.hp-row{display:flex;flex-wrap:wrap;gap:6px}
+.hp{display:flex;align-items:baseline;gap:5px;padding:5px 10px;border-radius:var(--r2);font-size:13px;background:var(--paper2)}
+.hp b{font-size:17px}.hp.self{background:var(--keep-bg);color:var(--done)}.hp.you{background:#e6eef8;color:var(--blue)}.hp.town{background:#f3ece0;color:#8a5a3b}
+.md-bars{display:flex;flex-direction:column;gap:4px}
+.md-row{display:grid;grid-template-columns:92px 1fr 40px;align-items:center;gap:8px;font-size:13px}
+.md-row i{height:10px;border-radius:var(--r1);display:block}.md-row i.pos{background:var(--done)}.md-row i.neg{background:var(--warn)}
+.md-row b{text-align:right;font-variant-numeric:tabular-nums}
+#gpDelta{position:absolute;left:44px;top:4px;font-size:13px;font-weight:900;opacity:0;pointer-events:none}
+#gpDelta.show{animation:mdelta 1.6s ease-out}
+@keyframes mdelta{0%{opacity:0;transform:translateY(4px)}15%{opacity:1;transform:none}75%{opacity:1}100%{opacity:0;transform:translateY(-8px)}}
+.wk-box{background:#fff;border-radius:var(--r2);padding:8px 12px;margin:8px 0}
+.wk-leg{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;font-weight:700;color:var(--ink2)}
+.wk-chart{width:100%;max-width:420px;display:block;margin-top:4px}.wk-chart text{font-size:10px;fill:#8a8594}
+.sheet .goal{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:15px}
+.sheet .goal>span:first-child{flex:1}
+.sheet .goal .st{font-size:13px;color:var(--ink2);text-align:right;max-width:45%}
+.sheet .goal.done .st{color:var(--done)}.sheet .goal.fail .st{color:var(--warn)}
+.gused{display:flex;align-items:center;gap:4px;margin-top:3px;color:var(--ink2);font-size:12px}
+.ach{font-size:15px;opacity:1;animation:tin .4s both .6s!important;display:flex;align-items:center;gap:10px}
+.vbtn{display:inline-flex;align-items:center;gap:4px;margin-left:8px;padding:2px 10px;min-height:0;font-size:13px;font-style:normal;font-weight:700;color:#b07d10;background:rgba(232,182,74,.18);border-radius:var(--r2);vertical-align:1px}
+@media (hover:hover){.vbtn:hover{background:rgba(232,182,74,.32)}}
+body.evening .hud,body.evening #leftCol{opacity:0;pointer-events:none;transition:opacity 1s}
+.bubble.memo{max-width:340px;font-size:15px;font-weight:600;font-style:italic;color:#6b4a2f;line-height:1.6;white-space:normal;text-align:left;background:#fff9ec}
+/* 静观：路上的短句、邻居招呼只听不显示；往事字幕保留；提示文字选“多”的玩家照常显示 */
+body.watch:not(.tips-3) #bubbles .bubble:not(.memo),body.watch.voice-on:not(.tips-3) #bubbles .bubble.memo{opacity:0!important}
+/* 手机：左上角默认折叠；折叠后的爷爷块和时间框同高、顶部对齐 */
+@media (max-width:760px){
+  #gp.collapsed{height:52px;padding-top:0;padding-bottom:0;display:flex;align-items:center}
+  #gp.collapsed #gpHead{height:52px}
+  #hudR{height:52px;top:calc(8px + env(safe-area-inset-top));padding:0 4px 0 10px}
+  #leftCol{top:calc(8px + env(safe-area-inset-top))}
+  #clock{font-size:18px;width:3.1em}
+}
+/* 当下帮忙（电话、陪同）并进底部同一条栏，和“布置”的道具分成两组 */
+#dock #actions{position:static;display:flex;gap:2px;padding:0 0 0 8px;margin-left:6px;border-left:1px solid rgba(91,88,102,.12);background:none;box-shadow:none;border-radius:0}
+#dock #actions.hidden{display:none}
+#dock.live:not(.open) #cards{display:none}
+@media (max-width:760px){#dock.live{right:8px}#dock #actions{margin-left:auto}}
+/* 成就：六边形徽章（和道具、头像同一种形状）；拿到的金底白图标，没拿到的灰。条件一直写着，玩家可以有意去挑战 */
+.ach-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin:4px 0 8px}
+.ach-list>div{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:10px 8px;border-radius:var(--r2);background:#fff;color:var(--ink2);font-size:12px;line-height:1.45}
+.ach-list>div b{font-size:14px;color:var(--ink)}
+.ach-list>div:not(.on) b{color:#a9a5b2}
+.ach-badge{--s:44px;width:var(--s);height:calc(var(--s) * 1.1);display:grid;place-items:center;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:#e4e0d6;color:#b3aea3}
+.ach-badge.on{background:linear-gradient(160deg,var(--gold) 0 52%,var(--gold-dark) 52%);color:#fff}
+.ach-badge svg{stroke:currentColor}
+.hb-cost{margin-left:auto;background:var(--en);color:var(--en-ink);font-size:11px;font-weight:900;padding:0 6px;line-height:17px;clip-path:var(--tag)}
+/* 手册（第二版）：短句、标签、对照 */
+.hb2-rows{display:grid;gap:6px}
+.hb2-rows>div{display:grid;grid-template-columns:6em 1fr;gap:10px;align-items:baseline;padding:8px 12px;background:#fff;border-radius:var(--r2);font-size:14px;line-height:1.5}
+.hb2-rows b{font-size:15px}
+.hb2-rows em{display:block;font-style:normal}.hb2-rows .ok{color:var(--done)}.hb2-rows .no{color:var(--warn)}
+.hb2-rows small{display:block;font-size:12px;color:var(--ink2)}
+.hb2-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.hb2-card{background:#fff;border-radius:var(--r2);padding:10px 12px}
+.hb2-top{display:flex;align-items:center;gap:8px}.hb2-top b{font-size:15px}.hb2-top .hb-cost{margin-left:auto}
+.hb2-today{font-style:normal;font-size:11px;font-weight:700;padding:1px 6px;border-radius:var(--r2);background:var(--keep-bg);color:var(--keep)}
+.hb2-card p{margin:6px 0 2px;font-size:14px;line-height:1.5}
+.hb2-card small{display:block;font-size:12px;color:var(--ink2);line-height:1.5}
+.hb2-tags{display:flex;flex-wrap:wrap;gap:6px}
+.hb2-tag{font-size:13px;padding:4px 10px;border-radius:var(--r2)}
+.hb2-tag.up{background:var(--keep-bg);color:var(--done)}.hb2-tag.down{background:#fbe7e4;color:#b8433a}
+.hb-lay .fold{margin-top:8px}
+@media (max-width:560px){.hb2-rows>div{grid-template-columns:1fr;gap:2px}}
