@@ -4,7 +4,7 @@
 
 *A single-player browser game about caring for a grandfather with early cognitive changes. The fog on the map is his mental map; every bit of help has a cost, and today's choices shape tomorrow.*
 
-▶ **在线试玩 / Play**：<https://zuooonz.github.io/MemoryGarden/>（电脑或手机浏览器直接打开，无需安装；完整一周约 30 分钟）
+▶ **在线试玩 / Play**：<https://zuooonz.github.io/memory-garden/>（电脑或手机浏览器直接打开，无需安装；完整一周约 30 分钟）
 
 AIGCC 2026 小红花游戏赛道（适老关怀）参赛作品，入围 32 强。
 
